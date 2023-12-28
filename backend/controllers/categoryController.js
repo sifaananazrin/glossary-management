@@ -64,21 +64,21 @@ exports.getAllCategories = async (req, res) => {
 
 
 exports.deleteCategory = async (req, res) => {
-  const { id } = req.params; // assuming you're passing the category ID in the URL
+  const { id } = req.params;
 
   try {
-    const category = await Category.findById(id);
+    const result = await Category.deleteOne({ _id: id });
 
-    if (!category) {
+    if (result.deletedCount === 0) {
       return res.status(404).json({ error: 'Category not found.' });
     }
 
-    await category.remove();
     res.status(200).json({ message: 'Category deleted successfully' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'An error occurred while deleting the category.' });
   }
 };
+
 
 

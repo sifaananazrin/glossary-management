@@ -9,7 +9,7 @@ To get started with this project, follow these steps:
 1. Clone the project repository:
 
    ```
-   git clone https://github.com/sifaananazrin/glossary-management-
+   git clone https://github.com/sifaananazrin/glossary-management
    ```
 
 2. Navigate to the server directory:

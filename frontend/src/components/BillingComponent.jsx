@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { FaPlus, FaMinus, FaSearch } from "react-icons/fa";
 import Sidebar from "./Sidebar";
+import axios from "axios"; 
 
 function BillingComponent() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [items, setItems] = useState([
-    { id: 1, name: "Item 1", quantity: 0, price: 10.0 },
-    { id: 2, name: "Item 2", quantity: 0, price: 20.0 },
-    { id: 3, name: "Item 3", quantity: 0, price: 30.0 },
-  ]);
+  const [items, setItems] = useState([]);
   const [customers, setCustomers] = useState([
     { id: 1, name: "Customer 1" },
     { id: 2, name: "Customer 2" },
@@ -22,43 +19,68 @@ function BillingComponent() {
   const [totalAmount, setTotalAmount] = useState(0);
 
   useEffect(() => {
-    const total = items.reduce(
-      (acc, item) => acc + item.quantity * item.price,
+    axios
+      .get("http://localhost:3000/item/getallitems")
+      .then((response) => {
+        const allItems = response.data;
+        const itemsWithStock = allItems.map((item) => ({
+          ...item,
+          stock: 0,
+        }));
+        setItems(itemsWithStock);
+        calculateTotalAmount(itemsWithStock);
+      })
+      .catch((error) => console.error("Error fetching items:", error));
+  }, []);
+
+  const handleSearch = () => {
+    axios
+      .get("http://localhost:3000/item/getallitems")
+      .then((response) => {
+        const allItems = response.data;
+        const filteredItems = allItems.filter((item) =>
+          item.name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        const itemsWithStock = filteredItems.map((item) => ({
+          ...item,
+          stock: 0,
+        }));
+        setItems(itemsWithStock);
+      })
+      .catch((error) => console.error("Error fetching items:", error));
+  };
+
+  const calculateTotalAmount = (updatedItems) => {
+    const total = updatedItems.reduce(
+      (acc, item) => acc + item.stock * item.price,
       0
     );
     setTotalAmount(total);
-  }, [items]);
-
-  const handleSearch = () => {
-    const filteredItems = items.filter((item) =>
-      item.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    setItems(filteredItems);
-
-    const filteredCustomers = customers.filter((customer) =>
-      customer.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    setCustomers(filteredCustomers);
   };
 
   const handleIncrement = (itemId) => {
-    setItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item
-      )
-    );
+    const updatedItems = items.map((item) => {
+      if (item.id === itemId) {
+        return { ...item, stock: item.stock + 1 };
+      }
+      return item;
+    });
+
+    setItems(updatedItems); 
+    calculateTotalAmount(updatedItems);
   };
 
   const handleDecrement = (itemId) => {
-    setItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === itemId
-          ? { ...item, quantity: Math.max(0, item.quantity - 1) }
-          : item
-      )
-    );
-  };
+    const updatedItems = items.map((item) => {
+      if (item.id === itemId) {
+        return { ...item, stock: Math.max(0, item.stock - 1) };
+      }
+      return item;
+    });
 
+    setItems(updatedItems); 
+    calculateTotalAmount(updatedItems);
+  };
   const handlePaymentChange = (event) => {
     setPaymentMethod({
       ...paymentMethod,
@@ -73,7 +95,6 @@ function BillingComponent() {
         <div className="mx-8 my-4">
           <div className="max-w-lg mx-auto p-5 bg-white shadow-md">
             <h1 className="text-2xl font-bold mb-6">Billing</h1>
-
             <div className="flex mb-5">
               <input
                 type="text"
@@ -89,8 +110,6 @@ function BillingComponent() {
                 <FaSearch />
               </button>
             </div>
-
-            {/* Items List */}
             <div className="border border-gray-200 rounded-md p-2 mb-6">
               {items.map((item) => (
                 <div
@@ -98,7 +117,7 @@ function BillingComponent() {
                   className="flex justify-between items-center p-2 border-b border-gray-300 last:border-b-0"
                 >
                   <span className="font-bold">{item.name}</span>
-                  <span>Quantity: {item.quantity}</span>
+                  <span>Quantity: {item.stock}</span>
                   <div className="flex space-x-2">
                     <button
                       onClick={() => handleDecrement(item.id)}
@@ -116,7 +135,6 @@ function BillingComponent() {
                 </div>
               ))}
             </div>
-
             {/* Total Amount */}
             <div className="mt-6 p-4 border-t border-gray-300 flex justify-between items-center">
               <span className="text-xl font-semibold">Total Amount:</span>
@@ -124,8 +142,6 @@ function BillingComponent() {
                 ${totalAmount.toFixed(2)}
               </span>
             </div>
-
-            {/* Customer Search */}
             <h2 className="text-xl font-bold mb-4">Customer Search</h2>
             <div className="flex mb-5">
               <input
@@ -142,7 +158,6 @@ function BillingComponent() {
                 <FaSearch />
               </button>
             </div>
-
             {/* Customers List */}
             <div className="border border-gray-200 rounded-md p-2 mb-6">
               {customers.map((customer) => (
@@ -157,7 +172,6 @@ function BillingComponent() {
                 </div>
               ))}
             </div>
-
             {/* Payment Methods */}
             <div className="mb-6">
               <h2 className="text-xl font-bold mb-4">Payment Methods</h2>
@@ -195,7 +209,7 @@ function BillingComponent() {
               </div>
             </div>
             <button className="bg-green-500 text-white px-2 py-2 w-full rounded-md hover:bg-green-700 focus:outline-none">
-              Add Customer
+              Done
             </button>
           </div>
         </div>
