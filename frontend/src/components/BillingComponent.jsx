@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaPlus, FaMinus, FaSearch } from "react-icons/fa";
 import Sidebar from "./Sidebar";
-import axios from "axios"; 
-
+import axios from "../api/axios";
 function BillingComponent() {
   const [searchQuery, setSearchQuery] = useState("");
   const [items, setItems] = useState([]);
@@ -20,7 +19,7 @@ function BillingComponent() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/item/getallitems")
+      .get("/item/getallitems")
       .then((response) => {
         const allItems = response.data;
         const itemsWithStock = allItems.map((item) => ({
@@ -35,7 +34,7 @@ function BillingComponent() {
 
   const handleSearch = () => {
     axios
-      .get("http://localhost:3000/item/getallitems")
+      .get("/item/getallitems")
       .then((response) => {
         const allItems = response.data;
         const filteredItems = allItems.filter((item) =>

@@ -21,23 +21,23 @@ function Sidebar() {
               <li>
                 <NavLink
                   exact
+                  to="/category"
+                  activeClassName="text-yellow-300"
+                  className="flex items-center py-2 mb-10"
+                >
+                  <FaRegListAlt className="mr-5" />
+                  <span className="ml-4">Categories</span>
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  exact
                   to="/items"
                   activeClassName="text-yellow-300"
                   className="flex items-center py-2 mb-10"
                 >
                   <FaShoppingBasket className="mr-5" />
                   <span className="ml-4">Items</span>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  exact
-                  to="/category"
-                  activeClassName="text-yellow-300"
-                  className="flex items-center py-2 mb-10" 
-                >
-                  <FaRegListAlt className="mr-5" />
-                  <span className="ml-4">Categories</span>
                 </NavLink>
               </li>
               <li>

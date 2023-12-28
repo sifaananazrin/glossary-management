@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import { FaEdit } from "react-icons/fa";
 import CategoryList from "./CategoryList";
 import Sidebar from "./Sidebar";
@@ -11,7 +11,7 @@ function CategoryManagement() {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/category/getallcategories"
+          "/category/getallcategories"
         );
         setCategories(response.data);
       } catch (error) {
@@ -25,7 +25,7 @@ function CategoryManagement() {
   const addCategory = async (categoryName) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/category/addcategory",
+        "/category/addcategory",
         {
           name: categoryName,
         }

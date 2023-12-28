@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import Sidebar from "./Sidebar";
 import { useNavigate } from "react-router-dom";
 import { FaEdit, FaTrash } from "react-icons/fa";
@@ -24,8 +24,8 @@ function ItemManagement() {
   const fetchCategoriesAndItems = async () => {
     try {
       const [categoriesResponse, itemsResponse] = await Promise.all([
-        axios.get("http://localhost:3000/category/getallcategories"),
-        axios.get("http://localhost:3000/item/getallitems"),
+        axios.get("/category/getallcategories"),
+        axios.get("/item/getallitems"),
       ]);
       setCategories(categoriesResponse.data);
       setItems(itemsResponse.data);
@@ -55,7 +55,7 @@ function ItemManagement() {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/item/additem",
+        "/item/additem",
         newItem
       );
       setItems([...items, response.data]);
@@ -75,7 +75,7 @@ function ItemManagement() {
 
   const onDeleteItem = async (itemId) => {
     try {
-      await axios.delete(`http://localhost:3000/item/deleteitem/${itemId}`);
+      await axios.delete(`/item/deleteitem/${itemId}`);
       setItems(items.filter((item) => item._id !== itemId));
     } catch (error) {
       console.error("Error deleting item:", error);

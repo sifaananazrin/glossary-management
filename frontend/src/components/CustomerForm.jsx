@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Sidebar from "./Sidebar";
@@ -14,7 +14,7 @@ function CustomerForm() {
   const fetchCustomers = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3000/customer/getallcustomers"
+        "/customer/getallcustomers"
       );
       setCustomers(response.data);
     } catch (error) {
@@ -36,7 +36,7 @@ function CustomerForm() {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/customer/addcustomer",
+        "/customer/addcustomer",
         customerData
       );
       toast.success("Customer added successfully!");

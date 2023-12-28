@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import axios from 'axios'
-
+import axios from "../api/axios";
 function CategoryList({ categories }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -14,7 +13,7 @@ function CategoryList({ categories }) {
   const handleDelete = async (id) => {
     try {
       const response = await axios.delete(
-        `http://localhost:3000/category/deletecategory/${id}`
+        `/category/deletecategory/${id}`
       );
 
       window.location.reload();
@@ -28,7 +27,7 @@ function CategoryList({ categories }) {
 
     try {
       const response = await axios.put(
-        "http://localhost:3000/category/editcategory",
+        "/category/editcategory",
         {
           id: selectedCategory._id,
           newName: selectedCategory.name,
